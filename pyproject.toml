@@ -9,6 +9,8 @@ dependencies = [
     "markdown>=3.10.2",
     "python-dotenv>=1.2.2",
     "python-telegram-bot>=22.8",
+    "strands-agents-tools>=0.8.0",
+    "strands-agents[ollama]>=1.43.0",
 ]
 
 [project.scripts]
