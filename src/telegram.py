@@ -2,19 +2,22 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, filters, ContextTypes
 from dotenv import load_dotenv
 from .claude import ClaudeAgent
+from .strands import LocalAgent
 import os
 import logging
 import markdown
 
 class TelegramHandler:
 
-    def __init__(self):
+    def __init__(self, provider):
         load_dotenv()
         self.logger = logging.getLogger(__name__)
         self.telegram_token = os.getenv("TELEGRAM_TOKEN", "TOKEN_HERE")
         self.claude_agent = ClaudeAgent()
+        self.local_agent = LocalAgent()
         allowed_user_id = os.getenv("ALLOWED_USER_ID", "")
         self.allowed_user_id = int(allowed_user_id) if allowed_user_id else None
+        self.provider = provider
 
     def init_bot(self):
         app = ApplicationBuilder().token(self.telegram_token).build()
@@ -39,8 +42,9 @@ class TelegramHandler:
         if not user_message:
             await update.message.reply_text("Something went wrong, please try again.")
             return
+        agent_handler = self.claude_agent if self.provider == "claude" else self.local_agent
 
-        agent_response = await self.claude_agent.run_agent(user_message) or ""
+        agent_response = await agent_handler.run_agent(user_message) or ""
         self.logger.info("Sending back Claude message to user....")
         formated_message = self._format_html(agent_response)
 
