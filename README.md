@@ -91,3 +91,29 @@ Inicializa el proyecto
 ```shell
 uv run messaging-agent
 ```
+
+## Usando Ollama
+
+Se agrego soporte para Ollama para poder correr el bot con modelos LLM locales, sin necesidad de una cuenta de Claude.
+
+Para poder usar Ollama, necesitaras lo siguiente:
+- [Ollama ](https://ollama.com/)
+- Un modelo de Ollama que soporte tools calling
+    - [https://ollama.com/search?c=tools](https://ollama.com/search?c=tools)
+- Correr tu modelo localmente
+```shell
+# Haz pull a tu modelo
+ollama pull qwen3.5:9b # Ejemplo
+# Correr tu modello
+ollama run qwen3.5:9b
+
+# Verifica que tu modelo este corriendo
+ollama ps # Ver que modelos estan corriendo localmente en Ollama
+```
+
+- Configurar tus env variables
+    - `OLLAMA_HOST` = host donde esta corriendo tu modelo (default=http://localhost:11434)
+    - `OLLAMA_MODEL` = Modelo que descargaste para usar en ollama
+
+Y listo, si quieres configurar ciertos elementos especificamente para tu modelo de Ollama, puedes modificar el archivo:
+[strands.py](/messaging-agent/src/strands.py), aqui se encuentra toda la configuracion de el agente local utilizando [Strands Agents SDK de Amazon](https://strandsagents.com/docs/user-guide/quickstart/python/)
